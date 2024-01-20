@@ -60,19 +60,16 @@ const slice = createSlice({
       state.postsById[postId].reactions = reactions;
     },
 
-    resetPosts(state, action) {
-      state.postsById = {};
-      state.currentPagePosts = [];
-    },
-
     deletePostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      delete state.postsById[action.payload.postId];
-
-      state.currentPagePosts = state.currentPagePosts.filter(
-        (postId) => postId !== action.payload.postId
-      );
+      const deletedPostId = action.payload;
+      state.currentPagePosts.forEach((postId, index) => {
+        if (postId === deletedPostId) {
+          state.currentPagePosts.splice(index, 1);
+        }
+      });
+      delete state.postsById[deletedPostId];
     },
 
     editPostSuccess(state, action) {
@@ -160,11 +157,10 @@ export const deletePost = (postId) => async (dispatch) => {
 };
 
 export const editPost =
-  ({ postId, data }) =>
+  ({ postId, content, image }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const { content, image } = data;
       const imageUrl = await cloudinaryUpload(image);
       const response = await apiService.put(`/posts/${postId}`, {
         content,
