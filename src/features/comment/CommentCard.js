@@ -1,21 +1,9 @@
-import React, { useState } from "react";
-import { Avatar, Box, Button, Paper, Stack, Typography } from "@mui/material";
+import React from "react";
+import { Avatar, Box, Paper, Stack, Typography } from "@mui/material";
 import { fDate } from "../../utils/formatTime";
 import CommentReaction from "./CommentReaction";
-import { deleteComment } from "./commentSlice";
-import { useDispatch } from "react-redux";
-import CommentDelete from "./CommentDelete";
 
 function CommentCard({ comment }) {
-  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-  const handleDeleteConfirmOpen = () => setOpenDeleteConfirm(true);
-  const handleDeleteConfirmClose = () => setOpenDeleteConfirm(false);
-  const dispatch = useDispatch();
-
-  const handleDeleteComment = (id) => {
-    dispatch(deleteComment(id));
-    handleDeleteConfirmClose();
-  };
   return (
     <Stack direction="row" spacing={2}>
       <Avatar alt={comment.author?.name} src={comment.author?.avatarUrl} />
@@ -32,19 +20,6 @@ function CommentCard({ comment }) {
           <Typography variant="caption" sx={{ color: "text.disabled" }}>
             {fDate(comment.createdAt)}
           </Typography>
-          <Button
-            variant="text"
-            color="error"
-            onClick={handleDeleteConfirmOpen}
-          >
-            Delete
-          </Button>
-          <CommentDelete
-            handleDeleteConfirmClose={handleDeleteConfirmClose}
-            openDeleteConfirm={openDeleteConfirm}
-            handleDeleteComment={handleDeleteComment}
-            comment={comment}
-          />
         </Stack>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {comment.content}
