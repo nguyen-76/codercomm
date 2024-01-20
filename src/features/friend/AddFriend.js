@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getSentFriendRequests, getUsers } from "./friendSlice";
 import {
   Stack,
   Typography,
@@ -6,13 +8,11 @@ import {
   Box,
   TablePagination,
   Container,
+  Switch,
   FormControl,
   FormGroup,
   FormControlLabel,
-  Switch,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getSentFriendRequests, getUsers } from "./friendSlice";
 import UserTable from "./UserTable";
 import SearchInput from "../../components/SearchInput";
 
@@ -20,29 +20,30 @@ function AddFriend() {
   const [filterName, setFilterName] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const dispatch = useDispatch();
   const [sentRequestFilter, setSentRequestFilter] = useState(false);
 
   const { currentPageUsers, usersById, totalUsers } = useSelector(
     (state) => state.friend
   );
+
   const users = currentPageUsers.map((userId) => usersById[userId]);
-  const dispatch = useDispatch();
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleChangeSent = () => {
+    setSentRequestFilter((prevState) => !prevState);
   };
 
   const handleSubmit = (searchQuery) => {
     setFilterName(searchQuery);
   };
 
-  const handleChangeSent = () => {
-    setSentRequestFilter((prevState) => !prevState);
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   useEffect(() => {
