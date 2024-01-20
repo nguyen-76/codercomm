@@ -6,9 +6,13 @@ import {
   Box,
   TablePagination,
   Container,
+  FormControl,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers } from "./friendSlice";
+import { getSentFriendRequests, getUsers } from "./friendSlice";
 import UserTable from "./UserTable";
 import SearchInput from "../../components/SearchInput";
 
@@ -16,6 +20,7 @@ function AddFriend() {
   const [filterName, setFilterName] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [sentRequestFilter, setSentRequestFilter] = useState(false);
 
   const { currentPageUsers, usersById, totalUsers } = useSelector(
     (state) => state.friend
@@ -36,9 +41,23 @@ function AddFriend() {
     setFilterName(searchQuery);
   };
 
+  const handleChangeSent = () => {
+    setSentRequestFilter((prevState) => !prevState);
+  };
+
   useEffect(() => {
-    dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
-  }, [filterName, page, rowsPerPage, dispatch]);
+    if (sentRequestFilter) {
+      dispatch(
+        getSentFriendRequests({
+          filterName,
+          page: page + 1,
+          limit: rowsPerPage,
+        })
+      );
+    } else {
+      dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
+    }
+  }, [filterName, page, rowsPerPage, dispatch, sentRequestFilter]);
 
   return (
     <Container>
@@ -62,6 +81,21 @@ function AddFriend() {
             </Typography>
 
             <Box sx={{ flexGrow: 1 }} />
+
+            <FormControl component="fieldset" variant="standard">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={sentRequestFilter}
+                      onChange={handleChangeSent}
+                      name="sentRequestFilter"
+                    />
+                  }
+                  label="Sent Requests"
+                />
+              </FormGroup>
+            </FormControl>
 
             <TablePagination
               sx={{
