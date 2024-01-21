@@ -30,7 +30,7 @@ function CommentDelete({
         <Typography id="modal-modal-title" variant="h6" component="h2" noWrap>
           Are you sure you want to delete this ?
         </Typography>
-        <Button onClick={() => handleDeleteComment(comment._id)}>Yes</Button>
+        <Button onClick={() => handleDeleteComment(comment)}>Yes</Button>
         <Button onClick={handleDeleteConfirmClose}>No</Button>
       </Box>
     </Modal>

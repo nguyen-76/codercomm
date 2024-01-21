@@ -9,16 +9,14 @@ import CommentDelete from "./CommentDelete";
 function CommentReaction({ comment }) {
   const dispatch = useDispatch();
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-  const handleDeleteConfirmOpen = () => setOpenDeleteConfirm(true);
   const handleDeleteConfirmClose = () => setOpenDeleteConfirm(false);
 
   const handleClick = (emoji) => {
     dispatch(sendCommentReaction({ commentId: comment._id, emoji }));
   };
 
-  const handleDeleteComment = (id) => {
-    dispatch(deleteComment(id));
-    handleDeleteConfirmClose();
+  const handleDeleteComment = (comment) => {
+    dispatch(deleteComment(comment));
   };
 
   return (
@@ -40,7 +38,11 @@ function CommentReaction({ comment }) {
         <ThumbDownAltRoundedIcon sx={{ fontSize: 20 }} />
       </IconButton>
       <Typography variant="body2">{comment?.reactions?.dislike}</Typography>
-      <Button variant="text" color="error" onClick={handleDeleteConfirmOpen}>
+      <Button
+        variant="text"
+        color="error"
+        onClick={() => setOpenDeleteConfirm(true)}
+      >
         Delete
       </Button>
       <CommentDelete

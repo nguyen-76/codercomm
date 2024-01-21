@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { Pagination, Stack, Typography } from "@mui/material";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getComments } from "./commentSlice";
