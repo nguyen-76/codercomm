@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getSentFriendRequests, getUsers } from "./friendSlice";
 import {
   Stack,
   Typography,
@@ -8,11 +6,9 @@ import {
   Box,
   TablePagination,
   Container,
-  Switch,
-  FormControl,
-  FormGroup,
-  FormControlLabel,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers } from "./friendSlice";
 import UserTable from "./UserTable";
 import SearchInput from "../../components/SearchInput";
 
@@ -20,24 +16,14 @@ function AddFriend() {
   const [filterName, setFilterName] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const dispatch = useDispatch();
-  const [sentRequestFilter, setSentRequestFilter] = useState(false);
 
   const { currentPageUsers, usersById, totalUsers } = useSelector(
     (state) => state.friend
   );
-
   const users = currentPageUsers.map((userId) => usersById[userId]);
+  const dispatch = useDispatch();
 
-  const handleChangeSent = () => {
-    setSentRequestFilter((prevState) => !prevState);
-  };
-
-  const handleSubmit = (searchQuery) => {
-    setFilterName(searchQuery);
-  };
-
-  const handleChangePage = (e, newPage) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
@@ -46,19 +32,13 @@ function AddFriend() {
     setPage(0);
   };
 
+  const handleSubmit = (searchQuery) => {
+    setFilterName(searchQuery);
+  };
+
   useEffect(() => {
-    if (sentRequestFilter) {
-      dispatch(
-        getSentFriendRequests({
-          filterName,
-          page: page + 1,
-          limit: rowsPerPage,
-        })
-      );
-    } else {
-      dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
-    }
-  }, [filterName, page, rowsPerPage, dispatch, sentRequestFilter]);
+    dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
+  }, [filterName, page, rowsPerPage, dispatch]);
 
   return (
     <Container>
@@ -82,21 +62,6 @@ function AddFriend() {
             </Typography>
 
             <Box sx={{ flexGrow: 1 }} />
-
-            <FormControl component="fieldset" variant="standard">
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={sentRequestFilter}
-                      onChange={handleChangeSent}
-                      name="sentRequestFilter"
-                    />
-                  }
-                  label="Sent Requests"
-                />
-              </FormGroup>
-            </FormControl>
 
             <TablePagination
               sx={{
